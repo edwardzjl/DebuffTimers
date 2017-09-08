@@ -5,7 +5,9 @@
 ## SavedVariablesPerCharacter: AUF_settings
 ## OptionalDeps: DPSMate, pfUI, LunaUnitFrames, XPerl_Target, DiscordUnitFrames, modui, UnitFramesImproved_Vanilla
 
-Debuffs.lua
-Buffs.lua
 
 DebuffTimers.lua
+
+Debuffs.lua
+# Buffs.lua
+
