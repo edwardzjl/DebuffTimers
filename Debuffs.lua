@@ -6,8 +6,8 @@ elseif (local == "") then
 else
     -- for the rest, usually english since it's the default language
     AUF_Debuff = {
-    	["DRUID"] = {
-	    	EFFECT = {
+        ["DRUID"] = {
+            EFFECT = {
                 ["Faerie Fire"] = { ICON = "Spell_Nature_FaerieFire", DURATION = 40 },
                 ["Faerie Fire (Feral)"] = { ICON = "Spell_Nature_FaerieFire", DURATION = 40 },
                 ["Moonfire"] = { ICON = "Spell_Nature_StarFall", DURATION = 12 },
