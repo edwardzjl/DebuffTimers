@@ -1,6 +1,10 @@
 ## Interface: 11200
 ## Title: Debuff Timers
+## Title-zhCN: Debuff Timers[CN]
+## Title-ruRU: Debuff Timers[RU]
 ## Notes: Timer Overlays for enemy buffs and debuffs
+## Notes-zhCN: 在目标头像的buff和debuff图标上显示剩余时间
+## Notes-ruRU: Дебафы с временем действия(как на 2.0.1+). Автор Renew, быдлокодер(локализатор) Wagrah. При поддержке группы vk.com/wowruru.
 ## Author: Renew, based on: shirsig - aurae
 ## SavedVariablesPerCharacter: AUF_settings
 ## OptionalDeps: DPSMate, pfUI, LunaUnitFrames, XPerl_Target, DiscordUnitFrames, modui, UnitFramesImproved_Vanilla
