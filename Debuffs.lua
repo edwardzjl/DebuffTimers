@@ -1,6 +1,6 @@
 local locale = GetLocale()
 if (locale == "zhCN") then
-    -- things for the french client
+    -- things for the chinese client
 elseif (local == "") then
     -- to be continued
 else
