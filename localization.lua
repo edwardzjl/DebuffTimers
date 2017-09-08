@@ -21,7 +21,7 @@ if locale == "zhCN" then
 		["Наскок"] = "Pounce",
 		["Оглушить"] = "Bash",
 		["Хватка природы"] = "Nature's Grasp",
-		
+
 		-- Hunter
 		["Укус скорпида"] = "Scorpid Sting",
 		["Укус змеи"] = "Serpent Sting",
@@ -38,17 +38,17 @@ if locale == "zhCN" then
 		["Отпугивание зверя"] = "Scare Beast",
 		["Дезориентирующий выстрел"] = "Scatter Shot",
 		["Контратака"] = "Counterattack",
-		["Безжалостно подрезать крылья"] = "Improved Wing Clip",	
+		["Безжалостно подрезать крылья"] = "Improved Wing Clip",
 		["Западня"] = "Entrapment",
 		["Метка охотника"] = "Hunter's Mark",
 		["Взрывная ловушка"] = "Explosive Trap",
 		["Обжигающая ловушка"] = "Immolation Trap",
 		["Замораживающая ловушка"] = "Freezing Trap",
 		["Ледяная ловушка"] = "Frost Trap",
-		
+
 		--Mage
-		["Распознавание магии"] = "Detect Magic",	
-		["Ледяная стрела"] = "Frostbolt",	
+		["Распознавание магии"] = "Detect Magic",
+		["Ледяная стрела"] = "Frostbolt",
 		["Конус холода"] = "Cone of Cold",
 		["Антимагия - немота"] = "Counterspell - Silenced",
 		["Огненный шар"] = "Fireball",
@@ -61,7 +61,7 @@ if locale == "zhCN" then
 		["Превращение: корова"] = "Polymorph: Cow",
 		["Превращение: свинья"] = "Polymorph: Pig",
 		["Превращение: черепаха"] = "Polymorph: Turtle",
-		["Кольцо льда"] = "Frost Nova",	
+		["Кольцо льда"] = "Frost Nova",
 		["Обморожение"] = "Frostbite",
 		["Уязвимость к стихиям"] = "Elemental Vulnerability",
 
@@ -69,7 +69,7 @@ if locale == "zhCN" then
 		["Молот правосудия"] = "Hammer of Justice",
 		["Покаяние"] = "Repentance",
 		["Изгнание нежити"] = "Turn Undead",
-		
+
 		--Priest
 		["Затмение"] = "Blackout",
 		["Слово Тьмы: Боль"] = "Shadow Word: Pain",
@@ -83,18 +83,18 @@ if locale == "zhCN" then
 		["Контроль над разумом"] = "Mind Control",
 
 		--Rogue
-		["Ослабление доспеха"] = "Expose Armor",
-		["Рваная рана"] = "Rupture",
-		["Гаррота"] = "Garrote",
-		["Ответный удар"] = "Riposte",
+		["破甲"] = "Expose Armor",
+		["割裂"] = "Rupture",
+		["绞喉"] = "Garrote",
+		["还击"] = "Riposte",
 		["Калечащий яд"] = "Crippling Poison",
 		["Смертельный яд"] = "Deadly Poison",
 		["Пинок - немота"] = "Kick - Silenced",
-		["Парализующий удар"] = "Gouge",
-		["Ослепление"] = "Blind",	
-		["Ошеломление"] = "Sap",
-		["Удар по почкам"] = "Kidney Shot",
-		["Подлый трюк"] = "Cheap Shot",
+		["凿击"] = "Gouge",
+		["致盲"] = "Blind",
+		["闷棍"] = "Sap",
+		["肾击"] = "Kidney Shot",
+		["偷袭"] = "Cheap Shot",
 
 		--Shaman
 		["Ледяной шок"] = "Frost Shock",
@@ -103,33 +103,33 @@ if locale == "zhCN" then
 		["Удар бури"] = "Stormstrike",
 
 		--Warlock
-		["Пироклазм"] = "Pyroclasm",
-		["Глубокий ожог души"] = "Aftermath",
-		["Ожог Тьмы"] = "Shadowburn",
-		["Жертвенный огонь"] = "Immolate",
-		["Порча"] = "Corruption",
-		["Бич агонии"] = "Curse of Agony",
-		["Проклятие изнеможения"] = "Curse of Exhaustion",
-		["Проклятие стихий"] = "Curse of the Elements",
-		["Проклятие тени"] = "Curse of Shadow",
-		["Проклятие косноязычия"] = "Curse of Tongues",
-		["Проклятие слабости"] = "Curse of Weakness",
-		["Проклятие безрассудства"] = "Curse of Recklessness",
-		["Рок"] = "Curse of Doom",
-		["Вытягивание жизни"] = "Siphon Life",
+		["火焰冲击"] = "Pyroclasm",
+		["清算"] = "Aftermath",
+		["暗影灼烧"] = "Shadowburn",
+		["献祭"] = "Immolate",
+		["腐蚀术"] = "Corruption",
+		["痛苦诅咒"] = "Curse of Agony",
+		["疲劳诅咒"] = "Curse of Exhaustion",
+		["元素诅咒"] = "Curse of the Elements",
+		["暗影诅咒"] = "Curse of Shadow",
+		["语言诅咒"] = "Curse of Tongues",
+		["虚弱诅咒"] = "Curse of Weakness",
+		["鲁莽诅咒"] = "Curse of Recklessness",
+		["厄运诅咒"] = "Curse of Doom",
+		["生命虹吸"] = "Siphon Life",
 		["Власть над Тьмой"] = "Shadow Vulnerability",
-		["Запрет чар"] = "Spell Lock",
+		["法术封锁"] = "Spell Lock",
 		["Пробуждение инфернала"] = "Inferno Effect",
 		["Увечье"] = "Cripple",
-		["Лик смерти"] = "Death Coil",
-		["Соблазн"] = "Seduction",
+		["死亡缠绕"] = "Death Coil",
+		["诱惑"] = "Seduction",
 		["Изгнание"] = "Banish",
-		["Страх"] = "Fear",
-		["Вой ужаса"] = "Howl of Terror",
-		["Похищение маны"] = "Drain Mana",
-		["Похищение жизни"] = "Drain Life",
-		["Похищение души"] = "Drain Soul",
-		["Эффект порченой крови"] = "Tainted Blood Effect",
+		["恐惧"] = "Fear",
+		["恐惧嚎叫"] = "Howl of Terror",
+		["吸取法力"] = "Drain Mana",
+		["吸取生命"] = "Drain Life",
+		["吸取灵魂"] = "Drain Soul",
+		["生命通道"] = "Tainted Blood Effect",
 
 		-- Warrior
 		["Обезоруживание"] = "Disarm",
@@ -155,8 +155,8 @@ if locale == "zhCN" then
 		["Сон"] = "Sleep",
 		["Сетестрел"] = "Net-o-Matic",
 		["Безрассудная атака"] = "Reckless Charge",
-		["Громовая поступь"] = "War Stomp",
-		
+		["战争践踏"] = "War Stomp",
+
 		--Parser
 		["You fail to %a+ (.*):.*"] = "Вам не удалось %a+ (.*):.*",
 		["is immune to your (.*)%."] = "обладает невосприимчивостью к вашему заклинанию \"(.*)\".%.",
@@ -167,9 +167,9 @@ if locale == "zhCN" then
 		["Your (.*) was deflected"] = "отклоняет ваше заклинание \"(.*)\".%.",
 		["Your (.*) is reflected"] = "отражает ваше заклинание \"(.*)\".%.",
 		["Your (.*) is parried"] = "парирует вашу способность \"(.*)\".%.",
-		["(.+) fades from (.+)%."] = "Действие эффекта (.+) наложенного на (.+) заканчивается%.",
+		["(.+) fades from (.+)%."] = "(.+)效果从(.+)身上消失了。",
 		["(.+)'s (.+) is removed%."] = "(.+) теряет (.+)%.",
-		["(.+) is afflicted by (.+)%."] = "(.+) находится под воздействием эффекта (.+)%.",
+		["(.+) is afflicted by (.+)%."] = "(.+)受到了(.+)效果的影响。",
 	}
 
 elseif locale == "ruRU" then
@@ -194,7 +194,7 @@ elseif locale == "ruRU" then
 		["Наскок"] = "Pounce",
 		["Оглушить"] = "Bash",
 		["Хватка природы"] = "Nature's Grasp",
-		
+
 		-- Hunter
 		["Укус скорпида"] = "Scorpid Sting",
 		["Укус змеи"] = "Serpent Sting",
@@ -211,17 +211,17 @@ elseif locale == "ruRU" then
 		["Отпугивание зверя"] = "Scare Beast",
 		["Дезориентирующий выстрел"] = "Scatter Shot",
 		["Контратака"] = "Counterattack",
-		["Безжалостно подрезать крылья"] = "Improved Wing Clip",	
+		["Безжалостно подрезать крылья"] = "Improved Wing Clip",
 		["Западня"] = "Entrapment",
 		["Метка охотника"] = "Hunter's Mark",
 		["Взрывная ловушка"] = "Explosive Trap",
 		["Обжигающая ловушка"] = "Immolation Trap",
 		["Замораживающая ловушка"] = "Freezing Trap",
 		["Ледяная ловушка"] = "Frost Trap",
-		
+
 		--Mage
-		["Распознавание магии"] = "Detect Magic",	
-		["Ледяная стрела"] = "Frostbolt",	
+		["Распознавание магии"] = "Detect Magic",
+		["Ледяная стрела"] = "Frostbolt",
 		["Конус холода"] = "Cone of Cold",
 		["Антимагия - немота"] = "Counterspell - Silenced",
 		["Огненный шар"] = "Fireball",
@@ -234,7 +234,7 @@ elseif locale == "ruRU" then
 		["Превращение: корова"] = "Polymorph: Cow",
 		["Превращение: свинья"] = "Polymorph: Pig",
 		["Превращение: черепаха"] = "Polymorph: Turtle",
-		["Кольцо льда"] = "Frost Nova",	
+		["Кольцо льда"] = "Frost Nova",
 		["Обморожение"] = "Frostbite",
 		["Уязвимость к стихиям"] = "Elemental Vulnerability",
 
@@ -242,7 +242,7 @@ elseif locale == "ruRU" then
 		["Молот правосудия"] = "Hammer of Justice",
 		["Покаяние"] = "Repentance",
 		["Изгнание нежити"] = "Turn Undead",
-		
+
 		--Priest
 		["Затмение"] = "Blackout",
 		["Слово Тьмы: Боль"] = "Shadow Word: Pain",
@@ -264,7 +264,7 @@ elseif locale == "ruRU" then
 		["Смертельный яд"] = "Deadly Poison",
 		["Пинок - немота"] = "Kick - Silenced",
 		["Парализующий удар"] = "Gouge",
-		["Ослепление"] = "Blind",	
+		["Ослепление"] = "Blind",
 		["Ошеломление"] = "Sap",
 		["Удар по почкам"] = "Kidney Shot",
 		["Подлый трюк"] = "Cheap Shot",
@@ -329,7 +329,7 @@ elseif locale == "ruRU" then
 		["Сетестрел"] = "Net-o-Matic",
 		["Безрассудная атака"] = "Reckless Charge",
 		["Громовая поступь"] = "War Stomp",
-		
+
 		--Parser
 		["You fail to %a+ (.*):.*"] = "Вам не удалось %a+ (.*):.*",
 		["is immune to your (.*)%."] = "обладает невосприимчивостью к вашему заклинанию \"(.*)\".%.",
@@ -366,7 +366,7 @@ else
 		["Pounce"] = "Pounce",
 		["Bash"] = "Bash",
 		["Nature's Grasp"] = "Nature's Grasp",
-		
+
 		-- Hunter
 		["Scorpid Sting"] = "Scorpid Sting",
 		["Serpent Sting"] = "Serpent Sting",
@@ -383,17 +383,17 @@ else
 		["Scare Beast"] = "Scare Beast",
 		["Scatter Shot"] = "Scatter Shot",
 		["Counterattack"] = "Counterattack",
-		["Improved Wing Clip"] = "Improved Wing Clip",	
+		["Improved Wing Clip"] = "Improved Wing Clip",
 		["Entrapment"] = "Entrapment",
 		["Hunter's Mark"] = "Hunter's Mark",
 		["Explosive Trap"] = "Explosive Trap",
 		["Immolation Trap"] = "Immolation Trap",
 		["Freezing Trap"] = "Freezing Trap",
 		["Frost Trap"] = "Frost Trap",
-		
+
 		--Mage
-		["Detect Magic"] = "Detect Magic",	
-		["Frostbolt"] = "Frostbolt",	
+		["Detect Magic"] = "Detect Magic",
+		["Frostbolt"] = "Frostbolt",
 		["Cone of Cold"] = "Cone of Cold",
 		["Counterspell - Silenced"] = "Counterspell - Silenced",
 		["Fireball"] = "Fireball",
@@ -406,7 +406,7 @@ else
 		["Polymorph: Cow"] = "Polymorph: Cow",
 		["Polymorph: Pig"] = "Polymorph: Pig",
 		["Polymorph: Turtle"] = "Polymorph: Turtle",
-		["Frost Nova"] = "Frost Nova",	
+		["Frost Nova"] = "Frost Nova",
 		["Frostbite"] = "Frostbite",
 		["Elemental Vulnerability"] = "Elemental Vulnerability",
 
@@ -414,7 +414,7 @@ else
 		["Hammer of Justice"] = "Hammer of Justice",
 		["Repentance"] = "Repentance",
 		["Turn Undead"] = "Turn Undead",
-		
+
 		--Priest
 		["Blackout"] = "Blackout",
 		["Shadow Word: Pain"] = "Shadow Word: Pain",
@@ -436,7 +436,7 @@ else
 		["Deadly Poison"] = "Deadly Poison",
 		["Kick - Silenced"] = "Kick - Silenced",
 		["Gouge"] = "Gouge",
-		["Blind"] = "Blind",	
+		["Blind"] = "Blind",
 		["Sap"] = "Sap",
 		["Kidney Shot"] = "Kidney Shot",
 		["Cheap Shot"] = "Cheap Shot",
@@ -501,7 +501,7 @@ else
 		["Net-o-Matic"] = "Net-o-Matic",
 		["Reckless Charge"] = "Reckless Charge",
 		["War Stomp"] = "War Stomp",
-		
+
 		--Parser
 		["You fail to %a+ (.*):.*"] = "You fail to %a+ (.*):.*",
 		["is immune to your (.*)%."] = "is immune to your (.*)%.",
