@@ -8,8 +8,8 @@ else
     AUF_Debuff = {
     	["DRUID"] = {
 	    	EFFECT = {
-		    	["Faerie Fire"] = { ICON = "Spell_Nature_FaerieFire", DURATION = 40 },
-    			["Faerie Fire (Feral)"] = { ICON = "Spell_Nature_FaerieFire", DURATION = 40 },
+                ["Faerie Fire"] = { ICON = "Spell_Nature_FaerieFire", DURATION = 40 },
+                ["Faerie Fire (Feral)"] = { ICON = "Spell_Nature_FaerieFire", DURATION = 40 },
                 ["Moonfire"] = { ICON = "Spell_Nature_StarFall", DURATION = 12 },
                 ["Soothe Animal"] = { ICON = "Ability_Hunter_BeastSoothe", DURATION = 15 },
                 ["Challenging Roar"] = { ICON = "Ability_Druid_ChallangingRoar", DURATION = 6 },
