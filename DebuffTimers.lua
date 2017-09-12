@@ -79,36 +79,25 @@ do
 			return full_duration
 		end
 	end
-end
 
-function UnitDebuffs(unit)
-	local debuffs = {}
-	local i = 1
-	while UnitDebuff(unit, i) do
-		AUF_Tooltip:SetOwner(UIParent, 'ANCHOR_NONE')
-		AUF_Tooltip:SetUnitDebuff(unit, i)
-		debuffs[AUF_TooltipTextLeft1:GetText()] = true
-		i = i + 1
-	end
-	return debuffs
-end
+	local function StartDR(effect, unit)
+		local key = DR_CLASS[effect] .. '@' .. unit
+		local timer = timers[key] or {}
 
-function UnitDebuffText(unit,position)
-	AUF_Tooltip:SetOwner(UIParent, 'ANCHOR_NONE')
-	AUF_Tooltip:SetUnitDebuff(unit, position)
+		if not timer.DR or timer.DR < 3 then
+			timers[key] = timer
 
-	return AUF_TooltipTextLeft1:GetText()
-end
-
-function SetActionRank(name, rank)
-	-- local _, _, rank = strfind(rank or '', 'Rank (%d+)')
-	local _, _, rank = strfind(rank or '', '等级 (%d+)')
-	if rank and AUFdebuff.SPELL[name] and AUFdebuff.EFFECT[name] then
-		AUFdebuff.EFFECT[AUFdebuff.SPELL[name].EFFECT or name].DURATION = AUFdebuff.SPELL[name].DURATION[tonumber(rank)]
-	elseif rank and AUFdebuff.SPELL[name] and AUFdebuff.SPELL[name].EFFECT then
-		AUFdebuff.EFFECT[AUFdebuff.SPELL[name].EFFECT or name].DURATION = AUFdebuff.SPELL[name].DURATION[tonumber(rank)]
+			timer.EFFECT = effect
+			timer.UNIT = unit
+			timer.START = nil
+			timer.END = nil
+			timer.DR = min(3, (timer.DR or 0) + 1)
+		end
 	end
 end
+
+
+
 
 do
 	local casting = {}
@@ -152,8 +141,9 @@ do
 			if not onself then
 				local name = text
 				local rank = 1
+				for a, b in string.gfind(text, DebuffTimersLocal["(.-)%(Rank (%d+)%)"]) do
 				-- for a,b in string.gfind(text, "(.-)%(Rank (%d+)%)") do
-				for a,b in string.gfind(text, "(.-)%(等级 (%d+)%)") do
+				-- for a,b in string.gfind(text, "(.-)%(等级 (%d+)%)") do
 					name = a
 					rank = b
 				end
@@ -245,15 +235,34 @@ do
 	end
 end
 
+
+-- Set the 
+-- @param name
+-- @param rank
+-------------------------------------
+function SetActionRank(name, rank)
+	local _, _, rank = strfind(rank or '', DebuffTimersLocal["Rank (%d+)"])
+	-- local _, _, rank = strfind(rank or '', 'Rank (%d+)')
+	-- local _, _, rank = strfind(rank or '', '等级 (%d+)')
+	if rank and AUFdebuff.SPELL[name] and AUFdebuff.EFFECT[name] then
+		AUFdebuff.EFFECT[AUFdebuff.SPELL[name].EFFECT or name].DURATION = AUFdebuff.SPELL[name].DURATION[tonumber(rank)]
+	elseif rank and AUFdebuff.SPELL[name] and AUFdebuff.SPELL[name].EFFECT then
+		AUFdebuff.EFFECT[AUFdebuff.SPELL[name].EFFECT or name].DURATION = AUFdebuff.SPELL[name].DURATION[tonumber(rank)]
+	end
+end
+
+
 function CHAT_MSG_SPELL_AURA_GONE_OTHER()
+	for effect, unit in string.gfind(arg1, DebuffTimersLocal["(.+) fades from (.+)%."]) do
 	-- for effect, unit in string.gfind(arg1, '(.+) fades from (.+)%.') do
-	for effect, unit in string.gfind(arg1, '(.+)效果从(.+)身上消失了。') do
+	-- for effect, unit in string.gfind(arg1, '(.+)效果从(.+)身上消失了。') do
 		AuraGone(unit, effect)
 	end
 end
 
 function CHAT_MSG_SPELL_BREAK_AURA()
-	for unit, effect in string.gfind(arg1, "(.+)'s (.+) is removed%.") do
+	-- for unit, effect in string.gfind(arg1, "(.+)'s (.+) is removed%.") do
+	for unit, effect in string.gfind(arg1, DebuffTimersLocal["(.+)'s (.+) is removed%."]) do
 		AuraGone(unit, effect)
 	end
 end
@@ -291,6 +300,19 @@ function AuraGone(unit, effect)
 		end
 	end
 end
+
+function UnitDebuffs(unit)
+	local debuffs = {}
+	local i = 1
+	while UnitDebuff(unit, i) do
+		AUF_Tooltip:SetOwner(UIParent, 'ANCHOR_NONE')
+		AUF_Tooltip:SetUnitDebuff(unit, i)
+		debuffs[AUF_TooltipTextLeft1:GetText()] = true
+		i = i + 1
+	end
+	return debuffs
+end
+
 
 function CHAT_MSG_COMBAT_HOSTILE_DEATH()
 	-- for unit in string.gfind(arg1, '(.+) dies') do -- TODO does not work when xp is gained
@@ -357,22 +379,6 @@ function StartTimer(effect, unit, start)
 
 	timer.stopped = nil
 	AUF:UpdateDebuffs()
-end
-
-function StartDR(effect, unit)
-
-	local key = DR_CLASS[effect] .. '@' .. unit
-	local timer = timers[key] or {}
-
-	if not timer.DR or timer.DR < 3 then
-		timers[key] = timer
-
-		timer.EFFECT = effect
-		timer.UNIT = unit
-		timer.START = nil
-		timer.END = nil
-		timer.DR = min(3, (timer.DR or 0) + 1)
-	end
 end
 
 function PLAYER_REGEN_ENABLED()
@@ -461,6 +467,7 @@ CreateFrame'Frame':SetScript('OnUpdate', function()
 	UpdateTimers()
 end)
 
+-- check if there are talent points --
 do
 	local function rank(i, j)
 		local _, _, _, _, rank = GetTalentInfo(i, j)
@@ -566,7 +573,7 @@ elseif getglobal("pfUITargetDebuff1") then AUF.DebuffAnchor = "pfUITargetDebuff"
 end
 
 function AUF.Debuff:Build()
-	for i=1,16 do
+	for i = 1, 16 do
 		AUF.Debuff[i] = CreateFrame("Model", "AUFDebuff"..i, nil, "CooldownFrameTemplate")
 		AUF.Debuff[i].parent = CreateFrame("Frame", "AUFDebuff"..i.."Cooldown", getglobal(AUF.DebuffAnchor..i))
 		AUF.Debuff[i].parent:SetPoint("CENTER",getglobal(AUF.DebuffAnchor..i),"CENTER", 0, 0)
@@ -590,7 +597,7 @@ function AUF.Debuff:Build()
 end
 
 function AUF.Buff:Build()
-	for i=1,16 do
+	for i = 1, 16 do
 		AUF.Buff[i] = CreateFrame("Model", "AUFBuff"..i, nil, "CooldownFrameTemplate")
 		AUF.Buff[i].parent = CreateFrame("Frame", "AUFBuff"..i.."Cooldown", getglobal(AUF.BuffAnchor..i))
 		AUF.Buff[i].parent:SetPoint("CENTER",getglobal(AUF.BuffAnchor..i),"CENTER", 0, 0)
@@ -613,7 +620,7 @@ function AUF.Buff:Build()
 	end
 end
 
-function AUF:UpdateFont(button,start,duration,style)
+function AUF:UpdateFont(button, start, duration, style)
 	if style == "Debuff" then
 		AUF.Debuff[button].Duation = duration
 		AUF.Debuff[button].parent:SetScript("OnUpdate",function()
@@ -662,10 +669,8 @@ function AUF:OnEvent()
 		AUF:BuildOptions()
 		AUF:BuildClassWindow()
 		AUF:UpdateDatabase()
-
 		AUF.Debuff:Build()
 		AUF.Buff:Build()
-
 	end
 end
 AUF:SetScript("OnEvent", AUF.OnEvent)
@@ -676,7 +681,7 @@ function AUF:OnTarget()
 		AUF:UpdateDebuffs()
 	else
 		AUF:UnregisterEvent("UNIT_AURA")
-		for i=1,16 do -- xperl fade problem
+		for i = 1, 16 do -- xperl fade problem
 			AUF.Debuff[i].parent:Hide()
 			AUF.Buff[i].parent:Hide()
 		end
@@ -685,9 +690,9 @@ end
 
 function AUF:UpdateDebuffs()
 	-- close old animations
-	for i=1,16 do
-		CooldownFrame_SetTimer(AUF.Debuff[i],0,0,0)
-		CooldownFrame_SetTimer(AUF.Buff[i],0,0,0)
+	for i = 1, 16 do
+		CooldownFrame_SetTimer(AUF.Debuff[i], 0, 0, 0)
+		CooldownFrame_SetTimer(AUF.Buff[i], 0, 0, 0)
 	end
 	-- delete old doublecheck
 	for effect, _ in AUF.DoubleCheck do
@@ -697,7 +702,7 @@ function AUF:UpdateDebuffs()
 	if UnitExists("target") then
 		for _, timer in timers do
 			if not timer.DR and AUF.UnitName("target") == timer.UNIT then
-				for i=1,16 do
+				for i = 1, 16 do
 					if UnitDebuffText("target",i) == timer.EFFECT and getglobal(AUF.DebuffAnchor..i) and not AUF.DoubleCheck[timer.EFFECT] then
 						if timer.EFFECT == "Intimidating Shout" then -- exception
 						else
@@ -748,6 +753,12 @@ function AUF:UpdateDebuffs()
 	end
 end
 
+function UnitDebuffText(unit, position)
+	AUF_Tooltip:SetOwner(UIParent, 'ANCHOR_NONE')
+	AUF_Tooltip:SetUnitDebuff(unit, position)
+	return AUF_TooltipTextLeft1:GetText()
+end
+
 function AUF:UpdateSavedVariables()
 	if not AUF_settings then AUF_settings = {} end
 	if not AUF_settings.TextSize then AUF_settings.TextSize = 20 end
@@ -780,7 +791,7 @@ function AUF:UpdateDatabase()
 	AUFdebuff = {}
 	AUFdebuff.SPELL = {}
 	AUFdebuff.EFFECT = {}
-	for class,effects in pairs(AUF_Debuff) do
+	for class, effects in pairs(AUF_Debuff) do
 		if AUF_settings.CLASS[class] then
 			for effect, info in pairs(effects) do
 				for name, tab in pairs(info) do
@@ -1011,7 +1022,7 @@ function AUF:SaveOptions()
 
 	-- text size settings
 	AUF_settings.TextSize = AUF.Options.SizeEditBox:GetNumber()
-	for i=1,16 do
+	for i = 1, 16 do
 		AUF.Debuff[i].Font:SetFont("Fonts\\ARIALN.TTF", AUF_settings.TextSize, "OUTLINE")
 		if getglobal("pfUITargetDebuff1") then AUF.Debuff[i].Font:SetFont("Interface\\AddOns\\pfUI\\fonts\\homespun.ttf", AUF_settings.TextSize, "OUTLINE") end
 		AUF.Buff[i].Font:SetFont("Fonts\\ARIALN.TTF", AUF_settings.TextSize, "OUTLINE")
@@ -1054,7 +1065,6 @@ function AUF:OpenClassOption(class)
 end
 
 function AUF:BuildClassWindow()
-
 	local classes = {
 		[1] = "WARRIOR",
 		[2] = "MAGE",
