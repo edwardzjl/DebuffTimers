@@ -2,8 +2,8 @@ local locale = GetLocale()
 if locale == "zhCN" then
 	DebuffTimersLocal = {
 		-- [Druid]
-		["Faerie Fire"] = "Волшебный огонь",
-		["Faerie Fire (Feral)"] = "Волшебный огонь (облик зверя)",
+		["Faerie Fire"] = "",
+		["Faerie Fire (Feral)"] = "",
 		["Moonfire"] = "Лунный огонь",
 		["Soothe Animal"] = "Умиротворение",
 		["Challenging Roar"] = "Вызывающий рев",
@@ -148,8 +148,8 @@ if locale == "zhCN" then
 		["Reckless Charge"] = "Безрассудная атака",
 		["War Stomp"] = "战争践踏",
 		-- [Parser]
-		["(.-)%(Rank (%d+)%)"] = "(.-)%(等级 (%d+)%)"
-		["Rank (%d+)"] = "等级 (%d+)"
+		["(.-)%(Rank (%d+)%)"] = "(.-)%(等级 (%d+)%)",
+		["Rank (%d+)"] = "等级 (%d+)",
 		["You fail to %a+ (.*):.*"] = "Вам не удалось %a+ (.*):.*",
 		["is immune to your (.*)%."] = "обладает невосприимчивостью к вашему заклинанию \"(.*)\".%.",
 		["Your (.*) missed"] = "Ваше заклинание (.*) не попадает по",
