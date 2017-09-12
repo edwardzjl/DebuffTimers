@@ -11,7 +11,6 @@
 
 
 DebuffTimers.lua
-
+localization.lua
 Debuffs.lua
-# Buffs.lua
 

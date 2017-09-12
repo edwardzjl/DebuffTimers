@@ -315,8 +315,9 @@ end
 
 
 function CHAT_MSG_COMBAT_HOSTILE_DEATH()
+	for unit in string.gfind(arg1, DebuffTimersLocal["(.+) dies"]) do
 	-- for unit in string.gfind(arg1, '(.+) dies') do -- TODO does not work when xp is gained
-	for unit in string.gfind(arg1, '(.+)死亡了。') do -- TODO does not work when xp is gained
+	-- for unit in string.gfind(arg1, '(.+)死亡了。') do -- TODO does not work when xp is gained
 		if IsPlayer(unit) then
 			UnitDied(unit)
 		elseif unit == UnitName'target' and UnitIsDead'target' then
@@ -326,8 +327,9 @@ function CHAT_MSG_COMBAT_HOSTILE_DEATH()
 end
 
 function CHAT_MSG_COMBAT_HONOR_GAIN()
+	for unit in string.gfind(arg1, DebuffTimersLocal["(.+) dies"]) do
 	-- for unit in string.gfind(arg1, '(.+) dies') do
-	for unit in string.gfind(arg1, '(.+)死亡了。') do
+	-- for unit in string.gfind(arg1, '(.+)死亡了。') do
 		UnitDied(unit)
 	end
 end
@@ -422,8 +424,9 @@ do
 
 	function CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE()
 		if player[hostilePlayer(arg1)] == nil then player[hostilePlayer(arg1)] = true end -- wrong for pets
+		for unit, effect in string.gfind(arg1, DebuffTimersLocal["(.+) is afflicted by (.+)%."]) do
 		-- for unit, effect in string.gfind(arg1, '(.+) is afflicted by (.+)%.') do
-		for unit, effect in string.gfind(arg1, '(.+)受到了(.+)效果的影响。') do
+		-- for unit, effect in string.gfind(arg1, '(.+)受到了(.+)效果的影响。') do
 			if AUFdebuff.EFFECT[effect] then
 				StartTimer(effect, unit, GetTime())
 			end
@@ -432,8 +435,9 @@ do
 
 	function CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE()
 		if player[hostilePlayer(arg1)] == nil then player[hostilePlayer(arg1)] = true end -- wrong for pets
+		for unit, effect in string.gfind(arg1, DebuffTimersLocal["(.+) is afflicted by (.+)%."]) do
 		-- for unit, effect in string.gfind(arg1, '(.+) is afflicted by (.+)%.') do
-		for unit, effect in string.gfind(arg1, '(.+)受到了(.+)效果的影响。') do
+		-- for unit, effect in string.gfind(arg1, '(.+)受到了(.+)效果的影响。') do
 			if AUFdebuff.EFFECT[effect] then
 				StartTimer(effect, unit, GetTime())
 			end
@@ -1078,7 +1082,7 @@ function AUF:BuildClassWindow()
 	}
 	AUF.ClassOptions = {}
 
-	for i =1, 9 do
+	for i = 1, 9 do
 		AUF.ClassOptions[i] = CreateFrame("Frame","AUF_ClassOptions_"..classes[i],AUF.Options)
 		AUF.ClassOptions[i]:SetID(i)
 		AUF.ClassOptions[i]:SetPoint("TOPLEFT",AUF.Options,"TOPRIGHT",0,0)
