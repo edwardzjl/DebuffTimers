@@ -5,7 +5,7 @@
 -- damn you Bit and your setfenv -_-
 
 local _G, _M = getfenv(0), {}
-setfenv(1, setmetatable(_M, {__index=_G}))
+setfenv(1, setmetatable(_M, {__index =_G}))
 
 do
 	local f = CreateFrame'Frame'
@@ -13,11 +13,10 @@ do
 		_M[event](this)
 	end)
 	for _, event in {
-		'CHAT_MSG_COMBAT_HONOR_GAIN', 'CHAT_MSG_COMBAT_HOSTILE_DEATH', 'PLAYER_REGEN_ENABLED',
-		'CHAT_MSG_SPELL_AURA_GONE_OTHER', 'CHAT_MSG_SPELL_BREAK_AURA',
-		'CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE', 'CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_BUFFS', 'CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE',
-		'SPELLCAST_STOP', 'SPELLCAST_INTERRUPTED', 'CHAT_MSG_SPELL_SELF_DAMAGE', 'CHAT_MSG_SPELL_FAILED_LOCALPLAYER',
-		'PLAYER_TARGET_CHANGED', 'UPDATE_BATTLEFIELD_SCORE',
+		'CHAT_MSG_COMBAT_HONOR_GAIN', 'CHAT_MSG_COMBAT_HOSTILE_DEATH', 'CHAT_MSG_SPELL_AURA_GONE_OTHER', 'CHAT_MSG_SPELL_BREAK_AURA',
+		'CHAT_MSG_SPELL_FAILED_LOCALPLAYER', 'CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_BUFFS', 'CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE',
+		'CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE', 'CHAT_MSG_SPELL_SELF_DAMAGE', 'PLAYER_TARGET_CHANGED', 'PLAYER_REGEN_ENABLED',
+		'SPELLCAST_STOP', 'SPELLCAST_INTERRUPTED', 'UPDATE_BATTLEFIELD_SCORE'
 	} do f:RegisterEvent(event) end
 end
 
@@ -102,6 +101,9 @@ end
 do
 	local casting = {}
 	local last_cast
+
+	-- whats this
+	-----------------------
 	local pending = {}
 
 	do
@@ -141,7 +143,8 @@ do
 			if not onself then
 				local name = text
 				local rank = 1
-				for a, b in string.gfind(text, DebuffTimersLocal["(.-)%(Rank (%d+)%)"]) do
+				local rankText = DebuffTimersLocal["(.-)%(Rank (%d+)%)"] or "(.-)%(Rank (%d+)%)"
+				for a, b in string.gfind(text, rankText) do
 				-- for a,b in string.gfind(text, "(.-)%(Rank (%d+)%)") do
 				-- for a,b in string.gfind(text, "(.-)%(等级 (%d+)%)") do
 					name = a
@@ -183,7 +186,7 @@ do
 
 	CreateFrame'Frame':SetScript('OnUpdate', function()
 		for effect, info in pending do
-			if GetTime() >= info.time  then
+			if GetTime() >= info.time then
 				StartTimer(effect, info.target, info.time)
 				pending[effect] = nil
 			end
@@ -241,7 +244,8 @@ end
 -- @param rank
 -------------------------------------
 function SetActionRank(name, rank)
-	local _, _, rank = strfind(rank or '', DebuffTimersLocal["Rank (%d+)"])
+	local rankText = DebuffTimersLocal["Rank (%d+)"] or "Rank (%d+)"
+	local _, _, rank = strfind(rank or '', rankText)
 	-- local _, _, rank = strfind(rank or '', 'Rank (%d+)')
 	-- local _, _, rank = strfind(rank or '', '等级 (%d+)')
 	if rank and AUFdebuff.SPELL[name] and AUFdebuff.EFFECT[name] then
@@ -253,7 +257,8 @@ end
 
 
 function CHAT_MSG_SPELL_AURA_GONE_OTHER()
-	for effect, unit in string.gfind(arg1, DebuffTimersLocal["(.+) fades from (.+)%."]) do
+	local text = DebuffTimersLocal["(.+) fades from (.+)%."] or "(.+) fades from (.+)%."
+	for effect, unit in string.gfind(arg1, text) do
 	-- for effect, unit in string.gfind(arg1, '(.+) fades from (.+)%.') do
 	-- for effect, unit in string.gfind(arg1, '(.+)效果从(.+)身上消失了。') do
 		AuraGone(unit, effect)
@@ -261,8 +266,9 @@ function CHAT_MSG_SPELL_AURA_GONE_OTHER()
 end
 
 function CHAT_MSG_SPELL_BREAK_AURA()
+	local text = DebuffTimersLocal["(.+)'s (.+) is removed%."] or "(.+)'s (.+) is removed%."
 	-- for unit, effect in string.gfind(arg1, "(.+)'s (.+) is removed%.") do
-	for unit, effect in string.gfind(arg1, DebuffTimersLocal["(.+)'s (.+) is removed%."]) do
+	for unit, effect in string.gfind(arg1, text) do
 		AuraGone(unit, effect)
 	end
 end
@@ -315,7 +321,8 @@ end
 
 
 function CHAT_MSG_COMBAT_HOSTILE_DEATH()
-	for unit in string.gfind(arg1, DebuffTimersLocal["(.+) dies"]) do
+	local text = DebuffTimersLocal["(.+) dies"] or "(.+) dies"
+	for unit in string.gfind(arg1, text) do
 	-- for unit in string.gfind(arg1, '(.+) dies') do -- TODO does not work when xp is gained
 	-- for unit in string.gfind(arg1, '(.+)死亡了。') do -- TODO does not work when xp is gained
 		if IsPlayer(unit) then
@@ -327,7 +334,8 @@ function CHAT_MSG_COMBAT_HOSTILE_DEATH()
 end
 
 function CHAT_MSG_COMBAT_HONOR_GAIN()
-	for unit in string.gfind(arg1, DebuffTimersLocal["(.+) dies"]) do
+	local text = DebuffTimersLocal["(.+) dies"] or "(.+) dies"
+	for unit in string.gfind(arg1, text) do
 	-- for unit in string.gfind(arg1, '(.+) dies') do
 	-- for unit in string.gfind(arg1, '(.+)死亡了。') do
 		UnitDied(unit)
@@ -424,7 +432,8 @@ do
 
 	function CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE()
 		if player[hostilePlayer(arg1)] == nil then player[hostilePlayer(arg1)] = true end -- wrong for pets
-		for unit, effect in string.gfind(arg1, DebuffTimersLocal["(.+) is afflicted by (.+)%."]) do
+		local text = DebuffTimersLocal["(.+) is afflicted by (.+)%."] or "(.+) is afflicted by (.+)%."
+		for unit, effect in string.gfind(arg1, text) do
 		-- for unit, effect in string.gfind(arg1, '(.+) is afflicted by (.+)%.') do
 		-- for unit, effect in string.gfind(arg1, '(.+)受到了(.+)效果的影响。') do
 			if AUFdebuff.EFFECT[effect] then
@@ -435,7 +444,8 @@ do
 
 	function CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE()
 		if player[hostilePlayer(arg1)] == nil then player[hostilePlayer(arg1)] = true end -- wrong for pets
-		for unit, effect in string.gfind(arg1, DebuffTimersLocal["(.+) is afflicted by (.+)%."]) do
+		local text = DebuffTimersLocal["(.+) is afflicted by (.+)%."] or "(.+) is afflicted by (.+)%."
+		for unit, effect in string.gfind(arg1, text) do
 		-- for unit, effect in string.gfind(arg1, '(.+) is afflicted by (.+)%.') do
 		-- for unit, effect in string.gfind(arg1, '(.+)受到了(.+)效果的影响。') do
 			if AUFdebuff.EFFECT[effect] then
@@ -1046,7 +1056,7 @@ function AUF:SaveOptions()
 		[9] = "PALADIN",
 	}
 
-	for i =1, 9 do
+	for i = 1, 9 do
 		local count = 0
 		for effect, info in pairs(AUF_Debuff[classes[i]].EFFECT) do
 			count = count + 1
@@ -1057,7 +1067,6 @@ function AUF:SaveOptions()
 
 	-- renew database
 	AUF:UpdateDatabase()
-
 
 	DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00Debuff Timers:|r Options saved.|r",1,1,1)
 	AUF.Options:Hide()
