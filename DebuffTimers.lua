@@ -202,7 +202,7 @@ local function StartDR(effect, unit)
 end
 
 --
--- @param 
+-- @param
 -------------------------------------------
 local function DiminishedDuration(unit, effect, full_duration)
 	local factor = {1, 1/2, 1/4, 0}
@@ -310,8 +310,6 @@ do
 				local rank = 1
 				local rankText = DebuffTimersLocal["(.-)%(Rank (%d+)%)"] or "(.-)%(Rank (%d+)%)"
 				for a, b in string.gfind(text, rankText) do
-				-- for a,b in string.gfind(text, "(.-)%(Rank (%d+)%)") do
-				-- for a,b in string.gfind(text, "(.-)%(等级 (%d+)%)") do
 					name = a
 					rank = b
 				end
@@ -327,7 +325,6 @@ do
 
 	function CHAT_MSG_SPELL_FAILED_LOCALPLAYER()
 		local text = DebuffTimersLocal["You fail to %a+ (.*):.*"] or "You fail to %a+ (.*):.*"
-		-- for action in string.gfind(arg1, 'You fail to %a+ (.*):.*') do
 		for action in string.gfind(arg1, text) do
 			casting[action] = nil
 		end
@@ -396,7 +393,6 @@ do
 		function CHAT_MSG_SPELL_SELF_DAMAGE()
 			for _, pattern in patterns do
 				local text = DebuffTimersLocal[pattern] or pattern
-				-- local _, _, effect = strfind(arg1, pattern)
 				local _, _, effect = strfind(arg1, text)
 				if effect then
 					pending[effect] = nil
@@ -425,8 +421,6 @@ do
 		if player[hostilePlayer(arg1)] == nil then player[hostilePlayer(arg1)] = true end -- wrong for pets
 		local text = DebuffTimersLocal["(.+) is afflicted by (.+)%."] or "(.+) is afflicted by (.+)%."
 		for unit, effect in string.gfind(arg1, text) do
-		-- for unit, effect in string.gfind(arg1, '(.+) is afflicted by (.+)%.') do
-		-- for unit, effect in string.gfind(arg1, '(.+)受到了(.+)效果的影响。') do
 			if AUFdebuff.EFFECT[effect] then
 				StartTimer(effect, unit, GetTime())
 			end
@@ -437,8 +431,6 @@ do
 		if player[hostilePlayer(arg1)] == nil then player[hostilePlayer(arg1)] = true end -- wrong for pets
 		local text = DebuffTimersLocal["(.+) is afflicted by (.+)%."] or "(.+) is afflicted by (.+)%."
 		for unit, effect in string.gfind(arg1, text) do
-		-- for unit, effect in string.gfind(arg1, '(.+) is afflicted by (.+)%.') do
-		-- for unit, effect in string.gfind(arg1, '(.+)受到了(.+)效果的影响。') do
 			if AUFdebuff.EFFECT[effect] then
 				StartTimer(effect, unit, GetTime())
 			end
@@ -1121,6 +1113,7 @@ function AUF:BuildClassWindow()
 end
 
 -- to detect talents
+-----------------------
 function AUF:DatabasePreload()
 	if CLASS == "MAGE" then
 		local _, _, _, _, rank = GetTalentInfo(2, 10) -- improved scorch
@@ -1129,12 +1122,10 @@ function AUF:DatabasePreload()
 				ICON = "Spell_Fire_SoulBurn",
 				DURATION = 30,
 			}
-
 			AUF_Debuff["MAGE"].SPELL["Scorch"] = {
 				DURATION = {30, 30, 30, 30, 30, 30, 30},
 				EFFECT = "Fire Vulnerability",
 			}
-
 		end
 
 		local _, _, _, _, rank = GetTalentInfo(2, 10) -- improved chilled
@@ -1157,13 +1148,34 @@ function AUF:DatabasePreload()
 	end
 end
 
+-- deep-copy a table
+----------------------
+local function cloneTable (t)
+    if type(t) ~= "table" then return t end
+    local meta = getmetatable(t)
+    local target = {}
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+        	newKey = DebuffTimersLocal[k]
+        	if newKey ~= nil then
+        		target[newKey] = cloneTable(v)
+        	else
+        	    target[k] = cloneTable(v)
+            end
+        else
+            target[k] = v
+        end
+    end
+    setmetatable(target, meta)
+    return target
+end
+
 function AUF:Localization()
 	for k, v in pairs(DR_CLASS) do
 		DR_CLASS_LOCAL[DebuffTimersLocal[k] or k] = v
 	end
-	for k, v in pairs(AUF_Debuff) do
-		AUF_Debuff_LOCAL[DebuffTimersLocal[k] or k] = v
-	end
+
+	AUF_Debuff_LOCAL = cloneTable(AUF_Debuff)
 end
 
 ------------------------------------------
