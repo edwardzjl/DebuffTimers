@@ -7,6 +7,8 @@
 local _G, _M = getfenv(0), {}
 setfenv(1, setmetatable(_M, {__index =_G}))
 
+-- Regist events
+--------------------------------------
 do
 	local f = CreateFrame'Frame'
 	f:SetScript('OnEvent', function()
@@ -22,8 +24,8 @@ end
 
 CreateFrame('GameTooltip', 'AUF_Tooltip', nil, 'GameTooltipTemplate')
 
--- Init all settings
---------------------
+-- Init settings
+--------------------------------------
 _G.AUF_settings = {}
 
 local COMBO = 0
@@ -44,39 +46,45 @@ local classes = {
 local DR_CLASS = {
 	["Bash"] = 1,
 	["Hammer of Justice"] = 1,
-	["偷袭"] = 1, -- Cheap Shot
+	["Cheap Shot"] = 1,
 	["Charge Stun"] = 1,
 	["Intercept Stun"] = 1,
 	["Concussion Blow"] = 1,
 
-	["恐惧"] = 2, -- Fear
-	["恐惧嚎叫"] = 2, -- Howl of Terror
-	["诱惑"] = 2,
+	["Fear"] = 2,
+	["Howl of Terror"] = 2,
+	["Seduction"] = 2,
 	["Intimidating Shout"] = 2,
 	["Psychic Scream"] = 2,
 
 	["Polymorph"] = 3,
-	["闷棍"] = 3, -- Sap
-	["凿击"] = 3, -- Gouge
+	["Sap"] = 3,
+	["Gouge"] = 3,
 
 	["Entangling Roots"] = 4,
 	["Frost Nova"] = 4,
 
 	["Freezing Trap Effect"] = 5,
-	["Wyvern String"] = 5,
+	["Wyvern Sting"] = 5,
 
-	["致盲"] = 6, -- Blind
+	["Blind"] = 6,
 
 	["Hibernate"] = 7,
 
 	["Mind Control"] = 8,
 
-	["肾击"] = 9, -- Kidney Shot
+	["Kidney Shot"] = 9,
 
-	["死亡缠绕"] = 10, -- Death Coil
+	["Death Coil"] = 10,
 
 	["Frost Shock"] = 11,
 }
+
+local DR_CLASS_LOCAL = {}
+
+for k, v in pairs(DR_CLASS) do
+	DR_CLASS_LOCAL[DebuffTimersLocal[k] or k] = v
+end
 
 local timers = {}
 
@@ -84,44 +92,44 @@ local timers = {}
 -- some local functions
 ---------------------------------------
 
--- Set the
--- @param name
--- @param rank
--------------------------------------
+-- Set the rank of the given spell.
+-- @param name: The name of the spell
+-- @param rank: The rank of the spell
+--------------------------------------
 local function SetActionRank(name, rank)
 	local rankText = DebuffTimersLocal["Rank (%d+)"] or "Rank (%d+)"
 	local _, _, rank = strfind(rank or '', rankText)
-	-- local _, _, rank = strfind(rank or '', 'Rank (%d+)')
-	-- local _, _, rank = strfind(rank or '', '等级 (%d+)')
-	if rank
-		and AUFdebuff.SPELL[name]
+	if rank and AUFdebuff.SPELL[name]
 		and (AUFdebuff.EFFECT[name] or AUFdebuff.SPELL[name].EFFECT) then
 		AUFdebuff.EFFECT[AUFdebuff.SPELL[name].EFFECT or name].DURATION = AUFdebuff.SPELL[name].DURATION[tonumber(rank)]
-	-- elseif rank and AUFdebuff.SPELL[name] and AUFdebuff.SPELL[name].EFFECT then
-		-- AUFdebuff.EFFECT[AUFdebuff.SPELL[name].EFFECT or name].DURATION = AUFdebuff.SPELL[name].DURATION[tonumber(rank)]
 	end
 end
 
+-- Returns true if the effect on unit is already in timers.
+-- false otherwise.
+--------------------------------------
 local function EffectActive(effect, unit)
-	return timers[effect .. '@' .. unit] and true or false
+	return timers[effect .. '@' .. unit] and true or false -- what's this?
 end
 
 local function ActivateDRTimer(effect, unit)
-	for k, v in DR_CLASS do
-		if v == DR_CLASS[effect] and EffectActive(k, unit) then
+	for k, v in DR_CLASS_LOCAL do
+		if v == DR_CLASS_LOCAL[effect] and EffectActive(k, unit) then
 			return
 		end
 	end
-	local timer = timers[DR_CLASS[effect] .. '@' .. unit]
+	local timer = timers[DR_CLASS_LOCAL[effect] .. '@' .. unit]
 	if timer then
 		timer.START = GetTime()
 		timer.END = timer.START + 15
 	end
 end
 
+-- Delete the timer of key in timers
+--------------------------------------
 local function StopTimer(key)
 	if timers[key] then
-		timers[key].stopped = GetTime()
+		-- timers[key].stopped = GetTime() -- What's the meaning of this?
 		timers[key] = nil
 	end
 end
@@ -143,7 +151,7 @@ local function AuraGone(unit, effect)
 		if IsPlayer(unit) then
 			AbortCast(effect, unit)
 			StopTimer(effect .. '@' .. unit)
-			if DR_CLASS[effect] then
+			if DR_CLASS_LOCAL[effect] then
 				ActivateDRTimer(effect, unit)
 			end
 		elseif unit == UnitName'target' then
@@ -175,7 +183,7 @@ local function UpdateTimers()
 	for k, timer in timers do
 		if timer.END and t > timer.END then
 			StopTimer(k)
-			if DR_CLASS[timer.EFFECT] and not timer.DR then
+			if DR_CLASS_LOCAL[timer.EFFECT] and not timer.DR then
 				ActivateDRTimer(timer.EFFECT, timer.UNIT)
 			end
 		end
@@ -183,7 +191,7 @@ local function UpdateTimers()
 end
 
 local function StartDR(effect, unit)
-	local key = DR_CLASS[effect] .. '@' .. unit
+	local key = DR_CLASS_LOCAL[effect] .. '@' .. unit
 	local timer = timers[key] or {}
 
 	if not timer.DR or timer.DR < 3 then
@@ -196,9 +204,12 @@ local function StartDR(effect, unit)
 	end
 end
 
+--
+-- @param 
+-------------------------------------------
 local function DiminishedDuration(unit, effect, full_duration)
 	local factor = {1, 1/2, 1/4, 0}
-	local class = DR_CLASS[effect]
+	local class = DR_CLASS_LOCAL[effect]
 	if class then
 		StartDR(effect, unit)
 		return full_duration * factor[timers[class .. '@' .. unit].DR]
@@ -218,9 +229,14 @@ local function StartTimer(effect, unit, start)
 	timer.END = timer.START
 
 	local duration = 0
-	if AUFdebuff.EFFECT[effect] and AUFdebuff.EFFECT[effect].DURATION then duration = AUFdebuff.EFFECT[effect].DURATION end
+	if AUFdebuff.EFFECT[effect] and AUFdebuff.EFFECT[effect].DURATION then
+		duration = AUFdebuff.EFFECT[effect].DURATION
+	end
+
 	local comboTime = 0
-	if AUFdebuff.SPELL[effect] and AUFdebuff.SPELL[effect].COMBO then comboTime = AUFdebuff.SPELL[effect].COMBO[COMBO] end
+	if AUFdebuff.SPELL[effect] and AUFdebuff.SPELL[effect].COMBO then
+		comboTime = AUFdebuff.SPELL[effect].COMBO[COMBO]
+	end
 
 	if AUFdebuff.SPELL[effect] and AUFdebuff.SPELL[effect].COMBO and COMBO > 0 then
 		duration = duration + comboTime
@@ -705,7 +721,7 @@ function AUF:UpdateDebuffs()
 						else
 							AUF.DoubleCheck[timer.EFFECT] = true
 						end
-						-- xper exception
+						-- xperl exception
 						if  getglobal("XPerl_Target_BuffFrame") then
 							AUF.Debuff[i].parent:SetWidth(getglobal(AUF.DebuffAnchor..i):GetWidth()*0.7)
 							AUF.Debuff[i].parent:SetHeight(getglobal(AUF.DebuffAnchor..i):GetHeight()*0.7)
@@ -798,8 +814,8 @@ function AUF:UpdateDatabase()
 	end
 end
 
--- UI Options
-
+-- Build UI Options
+--------------------------------
 function AUF:BuildOptions()
 	AUF.Options = CreateFrame("Frame",nil,UIParent)
 	AUF.Options:SetPoint("CENTER",0,0)
@@ -1016,30 +1032,20 @@ function AUF:SaveOptions()
 	AUF_settings.TextSize = AUF.Options.SizeEditBox:GetNumber()
 	for i = 1, 16 do
 		AUF.Debuff[i].Font:SetFont("Fonts\\ARIALN.TTF", AUF_settings.TextSize, "OUTLINE")
-		if getglobal("pfUITargetDebuff1") then AUF.Debuff[i].Font:SetFont("Interface\\AddOns\\pfUI\\fonts\\homespun.ttf", AUF_settings.TextSize, "OUTLINE") end
+		if getglobal("pfUITargetDebuff1") then
+			AUF.Debuff[i].Font:SetFont("Interface\\AddOns\\pfUI\\fonts\\homespun.ttf", AUF_settings.TextSize, "OUTLINE")
+		end
 		AUF.Buff[i].Font:SetFont("Fonts\\ARIALN.TTF", AUF_settings.TextSize, "OUTLINE")
-		if getglobal("pfUITargetBuff1") then AUF.Buff[i].Font:SetFont("Interface\\AddOns\\pfUI\\fonts\\homespun.ttf", AUF_settings.TextSize, "OUTLINE") end
+		if getglobal("pfUITargetBuff1") then
+			AUF.Buff[i].Font:SetFont("Interface\\AddOns\\pfUI\\fonts\\homespun.ttf", AUF_settings.TextSize, "OUTLINE")
+		end
 	end
-
-	-- aura save options
-	-- local classes = {
-	-- 	[1] = "WARRIOR",
-	-- 	[2] = "MAGE",
-	-- 	[3] = "ROGUE",
-	-- 	[4] = "DRUID",
-	-- 	[5] = "HUNTER",
-	-- 	[6] = "SHAMAN",
-	-- 	[7] = "PRIEST",
-	-- 	[8] = "WARLOCK",
-	-- 	[9] = "PALADIN",
-	-- }
 
 	for i = 1, 9 do
 		local count = 0
 		for effect, info in pairs(AUF_Debuff[classes[i]].EFFECT) do
 			count = count + 1
-			if AUF.ClassOptions[i].Spell[count]:GetChecked() then AUF_settings.effects[classes[i]].effect[effect] = true
-			else AUF_settings.effects[classes[i]].effect[effect] = false end
+			AUF_settings.effects[classes[i]].effect[effect] = AUF.ClassOptions[i].Spell[count]:GetChecked()
 		end
 	end
 
@@ -1123,7 +1129,6 @@ function AUF:BuildClassWindow()
 
 			AUF.ClassOptions[i]:SetHeight((oddcount*(28))+25)
 		end
-
 		AUF.ClassOptions[i]:Hide()
 	end
 end
@@ -1172,15 +1177,12 @@ end
 function CHAT_MSG_SPELL_AURA_GONE_OTHER()
 	local text = DebuffTimersLocal["(.+) fades from (.+)%."] or "(.+) fades from (.+)%."
 	for effect, unit in string.gfind(arg1, text) do
-	-- for effect, unit in string.gfind(arg1, '(.+) fades from (.+)%.') do
-	-- for effect, unit in string.gfind(arg1, '(.+)效果从(.+)身上消失了。') do
 		AuraGone(unit, effect)
 	end
 end
 
 function CHAT_MSG_SPELL_BREAK_AURA()
 	local text = DebuffTimersLocal["(.+)'s (.+) is removed%."] or "(.+)'s (.+) is removed%."
-	-- for unit, effect in string.gfind(arg1, "(.+)'s (.+) is removed%.") do
 	for unit, effect in string.gfind(arg1, text) do
 		AuraGone(unit, effect)
 	end
@@ -1189,8 +1191,6 @@ end
 function CHAT_MSG_COMBAT_HONOR_GAIN()
 	local text = DebuffTimersLocal["(.+) dies"] or "(.+) dies"
 	for unit in string.gfind(arg1, text) do
-	-- for unit in string.gfind(arg1, '(.+) dies') do
-	-- for unit in string.gfind(arg1, '(.+)死亡了。') do
 		UnitDied(unit)
 	end
 end
@@ -1207,8 +1207,6 @@ end
 function CHAT_MSG_COMBAT_HOSTILE_DEATH()
 	local text = DebuffTimersLocal["(.+) dies"] or "(.+) dies"
 	for unit in string.gfind(arg1, text) do
-	-- for unit in string.gfind(arg1, '(.+) dies') do -- TODO does not work when xp is gained
-	-- for unit in string.gfind(arg1, '(.+)死亡了。') do -- TODO does not work when xp is gained
 		if IsPlayer(unit) then
 			UnitDied(unit)
 		elseif unit == UnitName'target' and UnitIsDead'target' then
