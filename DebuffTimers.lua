@@ -81,10 +81,7 @@ local DR_CLASS = {
 }
 
 local DR_CLASS_LOCAL = {}
-
-for k, v in pairs(DR_CLASS) do
-	DR_CLASS_LOCAL[DebuffTimersLocal[k] or k] = v
-end
+local AUF_Debuff_LOCAL = {}
 
 local timers = {}
 
@@ -678,6 +675,7 @@ function AUF:OnEvent()
 		AUF:UpdateDebuffs()
 	elseif event == "ADDON_LOADED" and arg1 == "DebuffTimers" then
 		AUF:DatabasePreload()
+		AUF:Localization()
 		AUF:UpdateSavedVariables()
 		AUF:BuildOptions()
 		AUF:BuildClassWindow()
@@ -785,9 +783,9 @@ function AUF:UpdateSavedVariables()
 	if not AUF_settings.CLASS["PALADIN"] then AUF_settings.CLASS["PALADIN"] = false end
 
 	-- check for database spells and enable them if new
-	for class, effects in pairs(AUF_Debuff) do
+	for class, effects in pairs(AUF_Debuff_LOCAL) do
 		if not AUF_settings.effects[class] then AUF_settings.effects[class] = {} end
-		for aura, _ in pairs(AUF_Debuff[class].EFFECT) do
+		for aura, _ in pairs(AUF_Debuff_LOCAL[class].EFFECT) do
 			if not AUF_settings.effects[class].effect then AUF_settings.effects[class].effect = {} end
 			if not AUF_settings.effects[class].effect[aura] and AUF_settings.effects[class].effect[aura] ~= false then AUF_settings.effects[class].effect[aura] = true end
 		end
@@ -799,14 +797,14 @@ function AUF:UpdateDatabase()
 	AUFdebuff = {}
 	AUFdebuff.SPELL = {}
 	AUFdebuff.EFFECT = {}
-	for class, effects in pairs(AUF_Debuff) do
+	for class, effects in pairs(AUF_Debuff_LOCAL) do
 		if AUF_settings.CLASS[class] then
 			for effect, info in pairs(effects) do
 				for name, tab in pairs(info) do
 					if effect == "EFFECT" and AUF_settings.effects[class].effect[name] then
-						AUFdebuff.EFFECT[name] = AUF_Debuff[class].EFFECT[name]
+						AUFdebuff.EFFECT[name] = AUF_Debuff_LOCAL[class].EFFECT[name]
 					elseif effect == "SPELL" then
-						AUFdebuff.SPELL[name] = AUF_Debuff[class].SPELL[name]
+						AUFdebuff.SPELL[name] = AUF_Debuff_LOCAL[class].SPELL[name]
 					end
 				end
 			end
@@ -1043,7 +1041,7 @@ function AUF:SaveOptions()
 
 	for i = 1, 9 do
 		local count = 0
-		for effect, info in pairs(AUF_Debuff[classes[i]].EFFECT) do
+		for effect, info in pairs(AUF_Debuff_LOCAL[classes[i]].EFFECT) do
 			count = count + 1
 			AUF_settings.effects[classes[i]].effect[effect] = AUF.ClassOptions[i].Spell[count]:GetChecked()
 		end
@@ -1062,17 +1060,6 @@ function AUF:OpenClassOption(class)
 end
 
 function AUF:BuildClassWindow()
-	-- local classes = {
-	-- 	[1] = "WARRIOR",
-	-- 	[2] = "MAGE",
-	-- 	[3] = "ROGUE",
-	-- 	[4] = "DRUID",
-	-- 	[5] = "HUNTER",
-	-- 	[6] = "SHAMAN",
-	-- 	[7] = "PRIEST",
-	-- 	[8] = "WARLOCK",
-	-- 	[9] = "PALADIN",
-	-- }
 	AUF.ClassOptions = {}
 
 	for i = 1, 9 do
@@ -1090,7 +1077,7 @@ function AUF:BuildClassWindow()
 
 		local count = 0
 		local oddcount = 0
-		for effect, info in pairs(AUF_Debuff[classes[i]].EFFECT) do
+		for effect, info in pairs(AUF_Debuff_LOCAL[classes[i]].EFFECT) do
 			count = count + 1
 			if count == 1 then
 				AUF.ClassOptions[i].Spell = {}
@@ -1111,15 +1098,15 @@ function AUF:BuildClassWindow()
 			AUF.ClassOptions[i].Spell[count]:SetHeight(24)
 			AUF.ClassOptions[i].Spell[count]:SetWidth(24)
 			AUF.ClassOptions[i].Spell[count].Effect = effect
-			AUF.ClassOptions[i].Spell[count].Duration = AUF_Debuff[classes[i]].EFFECT[effect].DURATION
+			AUF.ClassOptions[i].Spell[count].Duration = AUF_Debuff_LOCAL[classes[i]].EFFECT[effect].DURATION
 			AUF.ClassOptions[i].Spell[count]:SetChecked(AUF_settings.effects[classes[i]].effect[effect])
 
 			AUF.ClassOptions[i].Spell[count].Icon = CreateFrame("Button",nil, AUF.ClassOptions[i].Spell[count])
 			AUF.ClassOptions[i].Spell[count].Icon:SetHeight(24)
 			AUF.ClassOptions[i].Spell[count].Icon:SetWidth(24)
 			AUF.ClassOptions[i].Spell[count].Icon:SetPoint("LEFT", AUF.ClassOptions[i].Spell[count], "RIGHT", 5, 0)
-			AUF.ClassOptions[i].Spell[count].Icon:SetNormalTexture("Interface\\Icons\\"..AUF_Debuff[classes[i]].EFFECT[effect].ICON)
-			AUF.ClassOptions[i].Spell[count].Icon:SetPushedTexture("Interface\\Icons\\"..AUF_Debuff[classes[i]].EFFECT[effect].ICON)
+			AUF.ClassOptions[i].Spell[count].Icon:SetNormalTexture("Interface\\Icons\\"..AUF_Debuff_LOCAL[classes[i]].EFFECT[effect].ICON)
+			AUF.ClassOptions[i].Spell[count].Icon:SetPushedTexture("Interface\\Icons\\"..AUF_Debuff_LOCAL[classes[i]].EFFECT[effect].ICON)
 
 			AUF.ClassOptions[i].Spell[count].Font = AUF.ClassOptions[i].Spell[count].Icon:CreateFontString(nil, "OVERLAY","GameFontHighlight")
 			AUF.ClassOptions[i].Spell[count].Font:SetPoint("LEFT",AUF.ClassOptions[i].Spell[count].Icon,"RIGHT", 10, 0)
@@ -1167,6 +1154,15 @@ function AUF:DatabasePreload()
 				DURATION = 15,
 			}
 		end
+	end
+end
+
+function AUF:Localization()
+	for k, v in pairs(DR_CLASS) do
+		DR_CLASS_LOCAL[DebuffTimersLocal[k] or k] = v
+	end
+	for k, v in pairs(AUF_Debuff) do
+		AUF_Debuff_LOCAL[DebuffTimersLocal[k] or k] = v
 	end
 end
 
