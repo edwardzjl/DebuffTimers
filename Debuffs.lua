@@ -213,7 +213,7 @@ if locale == "zhCN" then
                 ["吸取法力"] = { ICON = "Spell_Shadow_SiphonMana", DURATION = 5 }, -- Drain Mana
                 ["吸取生命"] = { ICON = "Spell_Shadow_LifeDrain02", DURATION = 5 }, -- Drain Life
                 ["吸取灵魂"] = { ICON = "Spell_Shadow_Haunting", DURATION = 15 }, -- Drain Soul
-                ["生命通道"] = { ICON = "Spell_Shadow_LifeDrain", DURATION = 10 },
+                ["腐坏之血效果"] = { ICON = "Spell_Shadow_LifeDrain", DURATION = 10 },
             },
             SPELL = {
                 ["暗影灼烧"] = { DURATION = {5, 5, 5, 5, 5, 5} }, -- Shadowburn
@@ -275,12 +275,13 @@ if locale == "zhCN" then
         ["GENERAL"] = {
             EFFECT = {
                 -- Green Whelp Armour
-                ["Sleep"] = { ICON = "Spell_Holy_MindVision", DURATION = 30 },
+                ["催眠术"] = { ICON = "Spell_Holy_MindVision", DURATION = 30 },
                 -- Net O Matic
-                ["Net-o-Matic"] = { ICON = "INV_Misc_Net_01", DURATION = 10 },
+                ["撒网器"] = { ICON = "INV_Misc_Net_01", DURATION = 10 },
                 -- Rocket Helm
-                ["Reckless Charge"] = { ICON = "INV_Helmet_49", DURATION = 30 },
-                ["战争践踏"] = { ICON = "Ability_WarStomp", DURATION = 2 }, -- War Stomp
+                ["无畏冲锋"] = { ICON = "INV_Helmet_49", DURATION = 30 },
+                -- War Stomp
+                ["战争践踏"] = { ICON = "Ability_WarStomp", DURATION = 2 },
             },
         },
     }
